@@ -2,13 +2,14 @@ package connmgr
 
 import (
 	"fmt"
-	"net"
+	"../engine"
+
 )
 
 // A handler for cleaning up after closing a socket
-func CloseConnection(conn net.Conn) {
+func CloseConnection(client *engine.ClientConnection) {
 
-	fmt.Println(conn.RemoteAddr(), "- Connection Closed")
-	conn.Close()
+	fmt.Println(client.RemoteAddr(), "- Connection Closed")
+	client.Conn().Close()
 
 }

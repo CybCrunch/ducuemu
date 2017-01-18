@@ -4,15 +4,18 @@ import (
 	common "github.com/hishboy/gocommons/lang"
 	"fmt"
 	"../jsonparser"
+	"container/list"
 )
 
 type EngineContainer struct {
-	queue *common.Queue
+	queue 	*common.Queue
+	cl	list.List
 }
 
 func NewEngine() *EngineContainer {
-	ec := &EngineContainer{}
-	ec.queue = common.NewQueue()
+	ec 		:= &EngineContainer{}
+	ec.queue 	= common.NewQueue()
+	ec.cl		= list.List{}
 	return ec
 }
 
@@ -43,4 +46,15 @@ func (ec *EngineContainer) PushMessage(msg interface{}) {
 
 	ec.queue.Push(msg)
 
+}
+
+func (ec *EngineContainer) AddClient(client *ClientConnection){
+
+	ec.cl.PushFront(client)
+
+	for obj := ec.cl.Front(); obj != nil; obj = obj.Next(){
+		//if obj.Value == client {
+			obj.Value.(*ClientConnection).PushMessage("{\"Info\":\"Client - " + client.RemoteAddr() + " Joined\"}")
+		//}
+	}
 }

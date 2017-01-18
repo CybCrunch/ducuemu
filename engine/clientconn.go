@@ -25,6 +25,7 @@ type ClientMessage struct {
 func NewClient(conn net.Conn, ec *EngineContainer) *ClientConnection {
 
 	client := &ClientConnection{conn, common.NewQueue(), ec}
+	ec.AddClient(client)
 	return client
 
 }
