@@ -3,6 +3,7 @@ package engine
 import (
 	"net"
 	common "github.com/hishboy/gocommons/lang"
+	"fmt"
 )
 
 
@@ -11,6 +12,7 @@ type ClientConnection struct {
 	conn net.Conn
 	queue *common.Queue
 	ec *EngineContainer
+	user string
 
 }
 
@@ -24,7 +26,7 @@ type ClientMessage struct {
 
 func NewClient(conn net.Conn, ec *EngineContainer) *ClientConnection {
 
-	client := &ClientConnection{conn, common.NewQueue(), ec}
+	client := &ClientConnection{conn, common.NewQueue(), ec, ""}
 	ec.AddClient(client)
 	return client
 
@@ -38,9 +40,7 @@ func (client *ClientConnection) RemoteAddr() string {
 }
 
 func (client *ClientConnection) PushMessage(msg interface{}) {
-
 	client.queue.Push(msg)
-
 }
 
 func (client *ClientConnection) PopMessage() interface{} {
@@ -56,7 +56,17 @@ func (client *ClientConnection) Conn() net.Conn {
 }
 
 func (client *ClientConnection) Process(msg string){
-
 	out := ClientMessage{client, msg}
 	client.ec.PushMessage(out)
 }
+
+// A handler for cleaning up after closing a socket
+func (client *ClientConnection) Close() {
+	fmt.Println(client.RemoteAddr(), "- Connection Closed")
+	client.Conn().Close()
+}
+
+func (client *ClientConnection) setUser(userid string){
+	client.user = userid
+}
+

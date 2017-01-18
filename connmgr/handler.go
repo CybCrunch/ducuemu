@@ -9,8 +9,6 @@ import (
 
 func handleConnection(client *engine.ClientConnection) {
 
-	// Loop until connection is closed
-
 	ch  := make(chan string)
 	eCh := make(chan error)
 
@@ -18,14 +16,7 @@ func handleConnection(client *engine.ClientConnection) {
 		for {
 			message, readerror := bufio.NewReader(client.Conn()).ReadString('\n')
 			if readerror != nil {
-				if readerror == io.EOF {
-					fmt.Println(client.Conn().RemoteAddr(), "- EOF Detected")
-					eCh<- readerror
-				} else {
-					fmt.Println(client.Conn().RemoteAddr(), "- Error reading: ", readerror.Error())
-					eCh<- readerror
-				}
-				CloseConnection(client)
+				eCh<- readerror
 				return
 			}
 			ch<- message
@@ -37,21 +28,24 @@ func handleConnection(client *engine.ClientConnection) {
 		select {
 			case message := <-ch:
 				client.Process(message)
+			case err := <- eCh:
+				if err != io.EOF{
+					fmt.Println(client.Conn().RemoteAddr(), "- Error reading: ", err.Error())
+				}
+				client.Close()
+				return
 			default:
 				break
 		}
 
-		var response string
-		if err := client.PopMessage(); err != nil {
-			response = err.(string)
-			// Send a response back to person contacting us.
+		if msg := client.PopMessage(); msg != nil {
+			response := msg.(string)
 			if _, err := client.Conn().Write([]byte(response + "\n")); err != nil {
 				fmt.Println(client.RemoteAddr(), "- Error Writing: ", err.Error())
-				CloseConnection(client)
+				client.Close()
 				return
 			}
 		}
-		//break
 	}
 
 }
