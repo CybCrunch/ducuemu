@@ -13,11 +13,11 @@ func main() {
 	config.Read()
 
 	dbh := db.NewDBHandler(config)
-	dbh.CreateTables()
-	dbh.RegisterUser("testuser", "password")
-	dbh.VerifyUser("testuser", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=")
+	dbh.Setup()
+	//dbh.RegisterUser("testuser", "password")
+	//dbh.VerifyUser("testuser", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=")
 
-	ec := engine.NewEngine(config)
+	ec := engine.NewEngine(config, dbh)
 	go ec.Start()
 
 	connmgr.Start(config, ec)

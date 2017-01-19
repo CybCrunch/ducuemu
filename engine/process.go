@@ -48,11 +48,13 @@ func ProcessMessage(cm ClientMessage) (parser.JsonMessage, error) {
 		}
 
 	} else if jm.MessageType == "login" {
-		return Login(jm.Message[0], cm.client), nil
+		return login(jm.Message, cm.client)
+	}  else if jm.MessageType == "register" {
+		return register(jm.Message, cm.client)
 	} else {
 
 		return parser.JsonMessage{MessageType:"error",
-			Message:[]string{"You must login before continuing"}}, nil
+			Message:[]string{"You must register and login before continuing"}}, nil
 	}
 
 

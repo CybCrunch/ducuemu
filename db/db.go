@@ -27,10 +27,23 @@ func NewDBHandler(config *config.DucuemuConfig) (*DBHandler) {
 	return dbh
 }
 
-func (dbh *DBHandler) Setup(){
-
-
+func (dbh *DBHandler) Setup() error {
+	return dbh.createTables()
 }
+
+
+func (dbh *DBHandler) CheckCount(rows *sql.Rows) (int, error) {
+
+	var count int
+	for rows.Next() {
+		err := rows.Scan(&count)
+		if err != nil{
+			return 0, err
+		}
+	}
+	return count, nil
+}
+
 
 func (dbh *DBHandler) Query(query string) (*sql.Rows, error){
 

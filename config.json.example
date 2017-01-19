@@ -1,5 +1,5 @@
 {
-  "db": ["dbuser", "dbpass", "dbhost", "tcp"],
+  "db": ["dbuser", "dbpass", "dbname", "dbhost", "tcp"],
   "host": "localhost:8001",
   "hostname": "ducuemu-testing"
 }

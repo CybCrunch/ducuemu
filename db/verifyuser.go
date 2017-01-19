@@ -6,8 +6,6 @@ import (
 
 func (dbh *DBHandler) VerifyUser(userid string, password string) bool {
 
-	fmt.Println("Testing Password: " + password)
-
 	rowpass, err := dbh.Query("Select password from users where username = '"+userid+"'")
 
 	if err != nil {
@@ -29,6 +27,6 @@ func (dbh *DBHandler) VerifyUser(userid string, password string) bool {
 		}
 	}
 
-	// We should not get to here
+	// We should never get to here
 	return false
 }

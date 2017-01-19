@@ -5,19 +5,22 @@ import (
 	parser "../jsonparser"
 	"container/list"
 	"../config"
+	"../db"
 )
 
 type EngineContainer struct {
 	msgchan	chan(ClientMessage)
 	cl	list.List
 	cfg	*config.DucuemuConfig
+	dbh	*db.DBHandler
 }
 
-func NewEngine(ducfg *config.DucuemuConfig) *EngineContainer {
+func NewEngine(ducfg *config.DucuemuConfig, dbh *db.DBHandler) *EngineContainer {
 	ec 		:= &EngineContainer{}
 	ec.msgchan	= make(chan ClientMessage)
 	ec.cl		= list.List{}
 	ec.cfg		= ducfg
+	ec.dbh		= dbh
 	return ec
 }
 
@@ -70,8 +73,14 @@ func (ec *EngineContainer) PushAll(msg interface{}) error {
 		return err
 	} else{
 		for obj := ec.cl.Front(); obj != nil; obj = obj.Next(){
-			obj.Value.(*ClientConnection).PushMessage(out)
+			if obj.Value.(*ClientConnection).user != ""{
+				obj.Value.(*ClientConnection).PushMessage(out)
+			}
 		}
 		return nil
 	}
+}
+
+func (ec *EngineContainer) DB() (*db.DBHandler) {
+	return ec.dbh
 }

@@ -2,7 +2,7 @@ package db
 
 import "fmt"
 
-func (dbh *DBHandler) CreateTables() error {
+func (dbh *DBHandler) createTables() error {
 	_, err := dbh.Query("CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,"+
 		"`username` MEDIUMTEXT NULL DEFAULT NULL, `password` MEDIUMTEXT NULL DEFAULT NULL, `email`"+
 		" MEDIUMTEXT NULL DEFAULT NULL, PRIMARY KEY (`id`));")
