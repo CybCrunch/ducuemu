@@ -17,7 +17,7 @@ func Login(login string, client *ClientConnection) parser.JsonMessage{
 		}
 		client.setUser(login)
 		fmt.Println("[user]: " + client.RemoteAddr() + " : User Login Success - " + login)
-
+		client.ec.PushAll(parser.JsonMessage{MessageType:"chat", Message:[]string{login + " has joined"}})
 		return parser.JsonMessage{MessageType:"error",
 			Message:[]string{"Welcome " + login + "!"}}
 

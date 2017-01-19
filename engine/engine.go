@@ -2,7 +2,7 @@ package engine
 
 import (
 	"fmt"
-	"../jsonparser"
+	parser "../jsonparser"
 	"container/list"
 )
 
@@ -28,10 +28,10 @@ func (ec *EngineContainer) Start() {
 			processed, processerror := ProcessMessage(msg)
 			if processerror != nil {
 				fmt.Println(msg.client.RemoteAddr(), "- " + processerror.Error())
-				out, _ := jsonparser.Serialize(processed)
+				out, _ := parser.Serialize(processed)
 				msg.client.PushMessage(out)
 			} else {
-				out, _ := jsonparser.Serialize(processed)
+				out, _ := parser.Serialize(processed)
 				if processed.MessageType == ""{
 					break
 				}
@@ -50,8 +50,7 @@ func (ec *EngineContainer) PushMessage(msg interface{}) {
 
 func (ec *EngineContainer) AddClient(client *ClientConnection){
 	ec.cl.PushFront(client)
-	msg := jsonparser.JsonMessage{MessageType:"info", Message:[]string{"Client Joined - " + client.RemoteAddr()}}
-	ec.PushAll(msg)
+	fmt.Println("[user]: " + client.RemoteAddr() + " Connected")
 }
 
 func (ec *EngineContainer) RemoveClient(client *ClientConnection){
@@ -60,10 +59,11 @@ func (ec *EngineContainer) RemoveClient(client *ClientConnection){
 			ec.cl.Remove(e)
 		}
 	}
+	ec.PushAll(parser.JsonMessage{MessageType:"chat", Message:[]string{client.user + " has disconnected."} })
 }
 
 func (ec *EngineContainer) PushAll(msg interface{}) error {
-	if out, err := jsonparser.Serialize(msg.(jsonparser.JsonMessage)); err != nil{
+	if out, err := parser.Serialize(msg.(parser.JsonMessage)); err != nil{
 		return err
 	} else{
 		for obj := ec.cl.Front(); obj != nil; obj = obj.Next(){

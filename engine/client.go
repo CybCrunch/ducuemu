@@ -63,6 +63,7 @@ func (client *ClientConnection) Process(msg string){
 // A handler for cleaning up after closing a socket
 func (client *ClientConnection) Close() {
 	fmt.Println(client.RemoteAddr(), "- Connection Closed")
+	client.ec.RemoveClient(client)
 	client.Conn().Close()
 }
 
