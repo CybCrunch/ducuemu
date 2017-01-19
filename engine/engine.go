@@ -4,17 +4,20 @@ import (
 	"fmt"
 	parser "../jsonparser"
 	"container/list"
+	"../config"
 )
 
 type EngineContainer struct {
 	msgchan	chan(ClientMessage)
 	cl	list.List
+	cfg	*config.DucuemuConfig
 }
 
-func NewEngine() *EngineContainer {
+func NewEngine(ducfg *config.DucuemuConfig) *EngineContainer {
 	ec 		:= &EngineContainer{}
 	ec.msgchan	= make(chan ClientMessage)
 	ec.cl		= list.List{}
+	ec.cfg		= ducfg
 	return ec
 }
 
