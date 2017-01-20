@@ -7,13 +7,14 @@ import (
 
 type Ship struct {
 
+	Name string
 	CU CoreUnit
 	reactor	el.Reactor
 
 }
 
 
-func newShip() (*Ship) {
+func NewShip() (*Ship) {
 
 	sh := &Ship{}
 	return sh
@@ -26,3 +27,6 @@ func (sh *Ship) ListElements() p.JsonMessage {
 
 }
 
+func (sh *Ship) SetName(s string){
+	sh.Name = s
+}

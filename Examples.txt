@@ -1,0 +1,3 @@
+{"messageType":"register", "message":["testuser", "password1234"]}
+{"messageType":"login", "message":["testuser", "password1234"]}
+{"messageType":"command", "message":["chat", "Hello Everyone!"]}

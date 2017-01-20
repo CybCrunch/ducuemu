@@ -26,7 +26,7 @@ func login(login []string, client *ClientConnection) (parser.JsonMessage, error)
 		return parser.Message("error", []string{"Invalid Password"}),
 			errors.New("Invalid Password")
 	}
-	
+
 	if sanitize.NonAscii(login[0]) {
 		return parser.Message("error", []string{"Username contains invalid characters"}),
 			errors.New("Username contains invalid characters")
@@ -47,9 +47,8 @@ func login(login []string, client *ClientConnection) (parser.JsonMessage, error)
 		dbh := client.ec.DB()
 
 		if dbh.VerifyUser(login[0], login[1]){
-			client.setUser(login[0])
+			client.InitClient(login[0])
 			fmt.Println("[user]: " + client.RemoteAddr() + " : User Login Success - " + login[0])
-			client.ec.PushAll(parser.Message("chat", []string{login[0] + " has joined"}))
 			return parser.Message("chat",[]string{"Welcome " + login[0] + "!"}), nil
 		} else {
 			fmt.Println("[user]: " + client.RemoteAddr() + " : User Login Failure - " + login[0])

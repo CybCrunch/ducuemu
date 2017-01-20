@@ -60,11 +60,15 @@ func (ec *EngineContainer) AddClient(client *ClientConnection){
 }
 
 func (ec *EngineContainer) RemoveClient(client *ClientConnection){
+
+	client.CleanupClient()
+
 	for e := ec.cl.Front(); e != nil; e = e.Next() {
 		if e.Value == client {
 			ec.cl.Remove(e)
 		}
 	}
+
 	ec.PushAll(parser.Message("chat", []string{client.user + " has disconnected."}))
 }
 
@@ -74,6 +78,21 @@ func (ec *EngineContainer) PushAll(msg interface{}) error {
 	} else{
 		for obj := ec.cl.Front(); obj != nil; obj = obj.Next(){
 			if obj.Value.(*ClientConnection).user != ""{
+				obj.Value.(*ClientConnection).PushMessage(out)
+			}
+		}
+		return nil
+	}
+}
+
+func (ec *EngineContainer) PushAllFrom(client *ClientConnection, msg interface{}) error {
+
+	if out, err := parser.Serialize(msg.(parser.JsonMessage)); err != nil{
+		return err
+	} else{
+		for obj := ec.cl.Front(); obj != nil; obj = obj.Next(){
+			user := obj.Value.(*ClientConnection).user
+			if user != "" && user != client.user {
 				obj.Value.(*ClientConnection).PushMessage(out)
 			}
 		}

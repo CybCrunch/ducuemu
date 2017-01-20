@@ -4,6 +4,8 @@ import (
 	"net"
 	common "github.com/hishboy/gocommons/lang"
 	"fmt"
+	sh "../ships"
+	parser "../jsonparser"
 )
 
 
@@ -13,6 +15,7 @@ type ClientConnection struct {
 	queue *common.Queue
 	ec *EngineContainer
 	user string
+	ship interface{}
 
 }
 
@@ -26,7 +29,7 @@ type ClientMessage struct {
 
 func NewClient(conn net.Conn, ec *EngineContainer) *ClientConnection {
 
-	client := &ClientConnection{conn, common.NewQueue(), ec, ""}
+	client := &ClientConnection{conn, common.NewQueue(), ec, "", sh.NewShip()}
 	ec.AddClient(client)
 	return client
 
@@ -71,3 +74,27 @@ func (client *ClientConnection) setUser(userid string){
 	client.user = userid
 }
 
+func (client *ClientConnection) InitClient(username string) error {
+
+	client.user = username
+	client.LoadShip()
+
+	client.ec.PushAll(parser.Message("chat", []string{username + " has joined"}))
+	return nil
+}
+
+func (client *ClientConnection) CleanupClient() {
+
+	client.SaveShip()
+}
+
+func (client *ClientConnection) LoadShip() {
+
+	client.ship = sh.NewCruiser()
+
+}
+
+func (client *ClientConnection) SaveShip() {
+
+
+}

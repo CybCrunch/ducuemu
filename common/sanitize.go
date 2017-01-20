@@ -2,7 +2,6 @@ package common
 
 import (
 	"strings"
-	"fmt"
 )
 
 func NonAscii(s string) bool {
