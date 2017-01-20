@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"github.com/yamamushi/ducuemu/common"
 )
 
 func (dbh *DBHandler) VerifyUser(userid string, password string) bool {
@@ -13,6 +14,8 @@ func (dbh *DBHandler) VerifyUser(userid string, password string) bool {
 		return false
 	}
 	defer rowpass.Close()
+
+	password = common.HashString(password)
 
 	for rowpass.Next() {
 		var result string

@@ -45,6 +45,8 @@ func (dbh *DBHandler) CheckCount(rows *sql.Rows) (int, error) {
 }
 
 
+// This is -not- safe, don't use this as an example if you're reading this just looking for something to copy
+// I'm just being lazy with my query sanitization, which I'm going to have to handle elsewhere
 func (dbh *DBHandler) Query(query string) (*sql.Rows, error){
 
 	// Create the database handle, confirm driver is present

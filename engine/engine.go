@@ -65,7 +65,7 @@ func (ec *EngineContainer) RemoveClient(client *ClientConnection){
 			ec.cl.Remove(e)
 		}
 	}
-	ec.PushAll(parser.JsonMessage{MessageType:"chat", Message:[]string{client.user + " has disconnected."} })
+	ec.PushAll(parser.Message("chat", []string{client.user + " has disconnected."}))
 }
 
 func (ec *EngineContainer) PushAll(msg interface{}) error {
