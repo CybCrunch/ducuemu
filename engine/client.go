@@ -2,7 +2,6 @@ package engine
 
 import (
 	"net"
-	common "github.com/hishboy/gocommons/lang"
 	"fmt"
 	sh "../ships"
 	parser "../jsonparser"
@@ -12,10 +11,10 @@ import (
 type ClientConnection struct {
 
 	conn net.Conn
-	queue *common.Queue
 	ec *EngineContainer
 	user string
 	ship interface{}
+	Mch  chan string
 
 }
 
@@ -29,7 +28,8 @@ type ClientMessage struct {
 
 func NewClient(conn net.Conn, ec *EngineContainer) *ClientConnection {
 
-	client := &ClientConnection{conn, common.NewQueue(), ec, "", sh.NewShip()}
+	mch := make(chan string)
+	client := &ClientConnection{conn, ec, "", sh.NewShip(), mch}
 	ec.AddClient(client)
 	return client
 
@@ -42,15 +42,10 @@ func (client *ClientConnection) RemoteAddr() string {
 
 }
 
-func (client *ClientConnection) PushMessage(msg interface{}) {
-	client.queue.Push(msg)
+func (client *ClientConnection) PushMessage(msg string) {
+	client.Mch <- msg
 }
 
-func (client *ClientConnection) PopMessage() interface{} {
-
-	return client.queue.Poll()
-
-}
 
 func (client *ClientConnection) Conn() net.Conn {
 

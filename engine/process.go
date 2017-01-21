@@ -14,6 +14,12 @@ func ProcessMessage(cm ClientMessage) (parser.JsonMessage, error) {
 			errors.New(err.Error())
 	}
 
+	if jm.MessageType == "logout"{
+		cm.client.PushMessage("Goodbye!")
+		cm.client.PushMessage("close") // Tells our handler to close the connection accordingly
+		return parser.JsonMessage{}, nil
+	}
+
 	if cm.client.user != "" {
 		if jm.MessageType == "command" {
 			return cm.client.ec.Command(cm.client, jm)

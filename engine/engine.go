@@ -43,11 +43,10 @@ func (ec *EngineContainer) Start() {
 				}
 				msg.client.PushMessage(out)
 			}
-		default:
-			break
+
 		}
 	}
-	fmt.Println("Game Engine Shutdown")
+	fmt.Println("Error Engine")
 }
 
 func (ec *EngineContainer) PushMessage(msg interface{}) {

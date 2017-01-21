@@ -5,9 +5,12 @@ import (
 	"./engine"
 	"./config"
 	"./db"
+	"github.com/pkg/profile"
 )
 
 func main() {
+
+	defer profile.Start(profile.CPUProfile).Stop()
 
 	config := config.NewConfig("")
 	config.Read()

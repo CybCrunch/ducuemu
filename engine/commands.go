@@ -10,13 +10,11 @@ import (
 
 func (ec *EngineContainer) Command(client *ClientConnection, jm parser.JsonMessage) (parser.JsonMessage, error) {
 
-	jml := len(jm.Message)
 	message := jm.Message
-	command := jm.MessageType
+	command := jm.Message[0]
 
 	if command == "set" {
-		return setCommand()
-
+		return setCommand(client, jm)
 	} else if command == "chat" {
 		return chatCommand(client, jm)
 	} else if command == "info" {
